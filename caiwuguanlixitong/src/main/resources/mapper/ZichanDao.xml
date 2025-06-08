@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.ZichanDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.zichan_name as zichanName
+        ,a.zichan_types as zichanTypes
+        ,a.zichan_content as zichanContent
+        ,a.zichan_money as zichanMoney
+        ,a.create_time as createTime
+    </sql>
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.ZichanView" >
+        SELECT
+        <include refid="Base_Column_List" />
+
+--         级联表的字段
+
+        FROM zichan  a
+
+        <where>
+            <if test=" params.zichanName != '' and params.zichanName != null and params.zichanName != 'null' ">
+                and a.zichan_name like CONCAT('%',#{params.zichanName},'%')
+            </if>
+            <if test="params.zichanTypes != null">
+                and a.zichan_types = #{params.zichanTypes}
+            </if>
+            <if test=" params.zichanContent != '' and params.zichanContent != null and params.zichanContent != 'null' ">
+                and a.zichan_content like CONCAT('%',#{params.zichanContent},'%')
+            </if>
+            <if test="params.zichanMoneyStart != null">
+                <![CDATA[  and a.zichan_money >= #{params.zichanMoneyStart}   ]]>
+            </if>
+            <if test="params.zichanMoneyEnd != null">
+                <![CDATA[  and a.zichan_money <= #{params.zichanMoneyEnd}   ]]>
+            </if>
+
+        </where>
+        order by a.id desc
+    </select>
+
+</mapper>
